@@ -43,7 +43,24 @@ async def get_all_game_items():
     return {'message': data}
 
 
-@app.post("/game", status_code=201)
+@app.get("/games", status_code=200)
+async def view_item():
+    try:
+        with open(data_file_path, 'r') as f:
+            ids = f.read()
+
+        game_ids = str(ids)
+
+        return {"message": game_ids}
+    except:
+        # TODO
+        print('Error')
+        # return appropriate response
+        return {"message": "Error"}
+
+
+
+@app.post("/add", status_code=201)
 async def add_an_item(game_id):
     try:
         with open(data_file_path, "a") as f:
@@ -56,7 +73,7 @@ async def add_an_item(game_id):
         return {"message": "Error"}
 
 
-@app.delete("/game", status_code=204)
+@app.delete("/delete", status_code=204)
 async def delete_an_item(game_id):
     try:
         with open(data_file_path, "r") as f:
