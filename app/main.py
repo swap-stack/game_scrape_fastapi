@@ -4,10 +4,9 @@ from pydantic import BaseModel
 import subprocess
 import json
 import os
-from dotenv import load_env
+from dotenv import load_dotenv
 
-
-load_env()
+load_dotenv()
 
 data_file_path = os.getenv('DATA_FILE')
 output_file_path = os.getenv('OUTPUT_FILE')
