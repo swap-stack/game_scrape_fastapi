@@ -30,19 +30,14 @@ async def get_all_game_items():
 
     if os.path.exists(output_file_path):
         os.remove(output_file_path)
-    try:
-        with open(data_file_path, 'r') as f:
-            ids = f.read()
-        if ids:
-            game_ids = str(ids)
-            cmd = f'scrapy crawl game -a game_ids={game_ids} -o {output_file_path}'
-            subprocess.check_output(cmd)
-            with open(output_file_path) as file:
-                data = json.load(file)
-    except:
-        # TODO
-        print('Error')
-        # return appropriate response
+    with open(data_file_path, 'r') as f:
+        ids = f.read()
+    if ids:
+        game_ids = str(ids)
+        cmd = f'scrapy crawl game -a game_ids={game_ids} -o {output_file_path}'
+        subprocess.check_output(cmd)
+        with open(output_file_path) as file:
+            data = json.load(file)
     return {'message': data}
 
 
