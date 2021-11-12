@@ -4,9 +4,13 @@ from pydantic import BaseModel
 import subprocess
 import json
 import os
+from dotenv import load_env
 
-data_file_path = "../data/game_ids.csv"
-output_file_path = "../data/output.json"
+
+load_env()
+
+data_file_path = os.getenv('DATA_FILE')
+output_file_path = os.getenv('OUTPUT_FILE')
 
 app = FastAPI()
 
