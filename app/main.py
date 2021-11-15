@@ -34,8 +34,12 @@ async def get_all_game_items():
         ids = f.read()
     if ids:
         game_ids = str(ids)
-        cmd = f"scrapy crawl game -a game_ids={game_ids} -o output.json"
-        subprocess.check_output(cmd)
+        
+        # cmd = f"scrapy crawl game -a game_ids={game_ids} -o output.json"
+        game_ids_strs = f"game_ids=f'{game_ids}"
+        print(f'####################{game_ids_strs}')
+        cli = ["scrapy", "crawl", "game", "-a", str(game_ids_strs), "-o", "output.json"]
+        subprocess.run(cli)
         with open(output_file_path) as file:
             data = json.load(file)
     return {'message': data}
