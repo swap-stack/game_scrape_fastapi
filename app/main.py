@@ -4,6 +4,7 @@ from pydantic import BaseModel
 import subprocess
 import json
 import os
+import re
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -23,6 +24,40 @@ class GameItem(BaseModel):
 class GameItemList(BaseModel):
     data: List[GameItem]
 
+def process_data():
+    updatedData = []
+
+    with open(output_file_path, 'r') as file:
+        data = json.load(file)
+        for item in data:
+            title = item['title']
+            price_str = item['prices']
+            discount = item['discount']
+
+            if title:
+                item['title'] = title[0].strip()
+            else:
+                item['title'] = ''
+
+            if discount:
+                if(len(re.findall(r"\d+", str(discount))) > 1):
+                    updated_discount = ''.join(re.findall(r"\d+", str(discount)))
+                else:
+                    updated_discount = re.findall(r"\d+", str(discount))[0]
+                item['discount'] = updated_discount
+            else:
+                item['discount'] = ''
+
+            if price_str:
+                updated_price_str = ''.join(re.findall(r"\d+", price_str))
+                item['prices'] = updated_price_str
+            else:
+                item['prices'] = ''
+            updatedData.append(item)
+    with open(output_file_path, 'w') as f:
+        json.dump(updatedData, f)
+
+
 
 @app.get("/items_prices")
 async def get_all_game_items():
@@ -34,14 +69,16 @@ async def get_all_game_items():
         ids = f.read()
     if ids:
         game_ids = str(ids)
-        
+
         # cmd = f"scrapy crawl game -a game_ids={game_ids} -o output.json"
-        game_ids_strs = f"game_ids=f'{game_ids}"
+        game_ids_strs = f'game_ids={game_ids}'
         print(f'####################{game_ids_strs}')
-        cli = ["scrapy", "crawl", "game", "-a", str(game_ids_strs), "-o", "output.json"]
-        subprocess.run(cli)
+        cmd = ["scrapy", "crawl", "game", "-a", str(game_ids_strs), "-o", "output.json"]
+        subprocess.run(cmd)
+        process_data()
         with open(output_file_path) as file:
             data = json.load(file)
+
     return {'message': data}
 
 
