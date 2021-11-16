@@ -8,10 +8,11 @@ class GameSpider(scrapy.Spider):
     def start_requests(self):
         ids = self.game_ids.split(',')
 
+        cookies = {"steamCountry":"IN%7C4e3872bffa3dc3f2cc8046cd1efd8bd9"}
         for id in ids:
             if id:
                 url = f'https://store.steampowered.com/app/{id}/'
-                yield scrapy.Request(url=url, callback=self.parse)
+                yield scrapy.Request(url=url,cookies=cookies, callback=self.parse)
 
     def parse(self, response):
         for game_item in response.css("div.game_area_purchase_game_wrapper"):
