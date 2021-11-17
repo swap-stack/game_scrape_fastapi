@@ -31,7 +31,7 @@ def process_data():
         data = json.load(file)
         for item in data:
             title = item['title']
-            price_str = item['prices']
+            prices = item['prices']
             discount = item['discount']
 
             if title:
@@ -40,23 +40,18 @@ def process_data():
                 item['title'] = ''
 
             if discount:
-                if(len(re.findall(r"\d+", str(discount))) > 1):
-                    updated_discount = ''.join(re.findall(r"\d+", str(discount)))
-                else:
-                    updated_discount = re.findall(r"\d+", str(discount))[0]
-                item['discount'] = updated_discount
+                item['discount'] = discount[0].strip()
             else:
                 item['discount'] = ''
 
-            if price_str:
-                updated_price_str = ''.join(re.findall(r"\d+", price_str))
-                item['prices'] = updated_price_str
+            if prices:
+                item['prices'] = prices[0].strip()
             else:
                 item['prices'] = ''
+
             updatedData.append(item)
     with open(output_file_path, 'w') as f:
         json.dump(updatedData, f)
-
 
 
 @app.get("/items_prices")
