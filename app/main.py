@@ -45,7 +45,8 @@ def process_data():
                 item['discount'] = ''
 
             if prices:
-                item['prices'] = prices[0].strip()
+                item['prices'] = prices.strip()
+
             else:
                 item['prices'] = ''
 
